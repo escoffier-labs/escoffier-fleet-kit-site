@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CopyCommand from '../components/CopyCommand.astro';
+import { SITE, EXTERNAL } from '../lib/site.ts';
+
+const COMMANDS = [
+  { cmd: 'bin/fleet-sync.sh', desc: 'The headless routine: fast-forward each site checkout, sync versions, regenerate OG cards, sync SEO heads, then commit and push only the repos that actually changed. Safe on a timer; a no-op run touches nothing.' },
+  { cmd: 'node og/render.mjs [slug]', desc: 'Render OG link-preview cards from one template (og/template.html) and content map (og/sites.json) straight to each repo’s public/og-card.png. No web server in the loop. Omit the slug to render every site.' },
+  { cmd: 'node bin/sync-versions.mjs', desc: 'Read each tool’s latest GitHub release (or skill count) and patch SITE.version in that site repo, so the sites never lag the tools they market.' },
+  { cmd: 'node bin/content-sync.mjs', desc: 'Detect new releases, draft a one-line kitchen-voice blurb from each changelog, refresh the “fresh from the kitchen” board, and open ONE review PR. Never pushes copy to main: a human merges.' },
+  { cmd: 'node bin/publishing-watchdog.mjs', desc: 'Read publishing/manifest.json, check local source state, pull live ClawHub stats for published skills, and print a Discord-ready report with a JSON receipt.' },
+];
+
+const FEATURES = [
+  {
+    title: 'One OG theme',
+    desc: 'Every site’s link-preview card renders from a single template and a per-site content map, in the shared dark-ledger kitchen style. Change the theme once, regenerate all.',
+  },
+  {
+    title: 'Version sync',
+    desc: 'Reads each tool’s latest release (or skill count) and writes it into that site’s SITE.version, so the marketing never lags the software.',
+  },
+  {
+    title: 'Hands-off, idempotent',
+    desc: 'fleet-sync fast-forwards, regenerates, and pushes only the repos that changed. A no-op run touches nothing, so it is safe to leave on a timer.',
+  },
+  {
+    title: 'Review-gated content',
+    desc: 'The content sync drafts kitchen-voice copy from changelogs with an LLM, but it never pushes to a site’s main. It opens one PR and pings Discord; a human merges.',
+  },
+  {
+    title: 'Publishing watchdog',
+    desc: 'Checks local source state against live ClawHub and Printing Press status and prints a Discord-ready report with a JSON receipt, so a stalled publish is visible.',
+  },
+  {
+    title: 'SEO, validated in CI',
+    desc: 'A shared SEO head and a seo-validate workflow keep titles, descriptions, canonicals, and structured data correct across every site instead of drifting one repo at a time.',
+  },
+];
+---
+<BaseLayout>
+  <main>
+    <header class="hero relative overflow-hidden">
+      <div class="hero-glow absolute inset-0"></div>
+      <div class="relative px-6 md:px-10 py-24 max-w-3xl mx-auto text-center">
+        <p class="kicker">[ FLEET MAINTENANCE &middot; ESCOFFIER LABS ]</p>
+        <h1 class="font-display text-5xl md:text-6xl leading-[1.02] mt-3">
+          One theme, every site. <span style="color: var(--accent);">A fleet that never drifts.</span>
+        </h1>
+        <p class="text-lg mt-4 max-w-xl mx-auto" style="color: var(--text-muted);">
+          Every Escoffier Labs tool gets its own marketing site. escoffier-fleet-kit keeps them all
+          looking the same and staying current from one place: one OG card template rendered into
+          every site, version sync from each tool’s latest release, and hands-off publishing that
+          commits and pushes only the repos that actually changed.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-7 items-center justify-center">
+          <CopyCommand command={SITE.install} />
+          <a href={EXTERNAL.github} class="text-sm font-semibold px-4 py-2" style="background: var(--accent); color: var(--on-accent);">View on GitHub &rarr;</a>
+        </div>
+        <p class="text-sm mt-3" style="color: var(--text-dim);">The économe of the brigade: keeps every station stocked, consistent, and current. This very page is one of the sites it builds.</p>
+        <p class="text-sm mt-1" style="color: var(--text-dim);">{SITE.subtitle}</p>
+      </div>
+    </header>
+
+    <section id="how-it-works" class="px-6 md:px-10 py-14 max-w-6xl mx-auto">
+      <div class="section-rule mb-8"><h2 class="kicker m-0">[ 01 &middot; THE ROUTINE ]</h2></div>
+      <div class="pantry-flow">
+        <div class="flow-node">
+          <h3>Sync · read and render</h3>
+          <ul>
+            <li>Fast-forward every <span class="font-mono">*-site</span> checkout (no merge, no force)</li>
+            <li>Read each tool’s latest release and patch its <span class="font-mono">SITE.version</span></li>
+            <li>Render every OG card from the one shared template</li>
+            <li>Sync the shared SEO head into each site</li>
+          </ul>
+        </div>
+        <div class="flow-link">
+          <span class="arrow">&rarr;</span>
+          <span class="label">commit and push only what changed · a no-op touches nothing</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+        <div class="flow-node">
+          <h3>Publish · only when needed</h3>
+          <ul>
+            <li>Skips any repo with a dirty or unchanged working tree</li>
+            <li>Commits and pushes the rest, one tidy commit each</li>
+            <li>Content blurbs go through a review PR, never straight to main</li>
+            <li>The watchdog reports publish status with a JSON receipt</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="px-6 md:px-10 py-14 max-w-6xl mx-auto">
+      <div class="section-rule mb-8"><h2 class="kicker m-0">[ 02 &middot; FEATURES ]</h2></div>
+      <div class="card-grid">
+        {FEATURES.map((f) => (
+          <div class="shelf-card">
+            <h3>{f.title}</h3>
+            <p>{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="commands" class="px-6 md:px-10 py-14 max-w-4xl mx-auto">
+      <div class="section-rule mb-8"><h2 class="kicker m-0">[ 03 &middot; SCRIPTS ]</h2></div>
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Script</th><th>What it does</th></tr>
+        </thead>
+        <tbody>
+          {COMMANDS.map((c) => (
+            <tr><td>{c.cmd}</td><td>{c.desc}</td></tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="text-sm mt-6 max-w-2xl" style="color: var(--text-muted);">
+        The canonical aesthetic lives in <span class="font-mono">DESIGN.md</span> (copied into each
+        site repo); per-site version sources live in <span class="font-mono">sites.config.json</span>.
+        The kit is Node plus a little Bash, and it renders cards with system Chromium - no web server
+        in the loop.
+      </p>
+    </section>
+
+    <section id="links" class="px-6 md:px-10 py-14 max-w-4xl mx-auto">
+      <div class="section-rule mb-8"><h2 class="kicker m-0">[ 04 &middot; LINKS ]</h2></div>
+      <p class="max-w-2xl mb-5" style="color: var(--text-muted);">
+        escoffier-fleet-kit is part of the Brigade fleet from Escoffier Labs. Browse the source, read
+        the full README, or explore the rest of the kitchen.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href={EXTERNAL.github} class="text-sm px-4 py-2 rounded-md border inline-block"
+          style="border-color: var(--hairline); background: var(--bg-panel);">GitHub repo &rarr;</a>
+        <a href={EXTERNAL.readme} class="text-sm px-4 py-2 rounded-md border inline-block"
+          style="border-color: var(--hairline); background: var(--bg-panel);">Read the README &rarr;</a>
+        <a href={EXTERNAL.escoffier} class="text-sm px-4 py-2 rounded-md border inline-block"
+          style="border-color: var(--hairline); background: var(--bg-panel);">Escoffier Labs &rarr;</a>
+        <a href={EXTERNAL.brigade} class="text-sm px-4 py-2 rounded-md border inline-block"
+          style="border-color: var(--hairline); background: var(--bg-panel);">Brigade &rarr;</a>
+        <a href={EXTERNAL.cookbook} class="text-sm px-4 py-2 rounded-md border inline-block"
+          style="border-color: var(--hairline); background: var(--bg-panel);">Cookbook &rarr;</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero-glow {
+    background: radial-gradient(ellipse 50% 55% at 50% 28%, color-mix(in srgb, var(--accent) 7%, transparent) 0%, transparent 70%);
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+import Analytics from '@vercel/analytics/astro';
+import CloudflareAnalytics from '../components/CloudflareAnalytics.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Seo from '../components/Seo.astro';
+import { SITE, EXTERNAL } from '../lib/site.ts';
+import { composeTitle, softwareApplicationLd, organizationLd, absoluteImage, graph } from '../lib/seo.ts';
+
+const { title: pageTitle, description = SITE.metaDescription ?? SITE.description } = Astro.props;
+const title = composeTitle(pageTitle, SITE.seoTitle);
+const siteUrl = (Astro.site ?? new URL(SITE.url)).toString();
+const keywords = [
+  'escoffier-fleet-kit',
+  'website fleet',
+  'OG card template',
+  'version sync',
+  'Astro sites',
+  'shared theme',
+  'static site automation',
+  'Brigade fleet',
+  'Escoffier Labs',
+];
+const jsonLd = graph([
+  organizationLd(),
+  softwareApplicationLd({
+    name: SITE.name,
+    siteUrl,
+    description,
+    image: absoluteImage(siteUrl, SITE.image),
+    codeRepository: EXTERNAL.github,
+    softwareVersion: SITE.version,
+  }),
+]);
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Seo siteName={SITE.name} title={title} description={description} keywords={keywords} jsonLd={jsonLd} />
+    <link rel="icon" href="/favicon.svg" />
+    <Analytics />
+    <CloudflareAnalytics />
+    <script is:inline>
+      (() => {
+        const mq = window.matchMedia('(prefers-color-scheme: light)');
+        const stored = () => { try { return localStorage.getItem('escoffier-fleet-kit-theme'); } catch { return null; } };
+        const apply = () => { document.documentElement.dataset.theme = stored() ?? (mq.matches ? 'light' : 'dark'); };
+        apply();
+        mq.addEventListener('change', () => { if (!stored()) apply(); });
+      })();
+    </script>
+  </head>
+  <body>
+    <SiteNav />
+    <slot />
+    <SiteFooter />
+  </body>
+</html>
