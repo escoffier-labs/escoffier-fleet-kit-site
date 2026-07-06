@@ -18,12 +18,9 @@ import { Search } from 'lucide-react';
     <span>Search</span>
     <kbd class="rounded border px-1.5 py-0.5 text-[0.65rem]" style="border-color: var(--hairline-strong); color: var(--text-dim);">Ctrl K</kbd>
   </button>
-  <a href={EXTERNAL.github} class="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border"
-    style="border-color: var(--hairline); background: var(--bg-panel);">
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="var(--accent)" aria-hidden="true">
-      <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
-    </svg>
-    <span>Star on GitHub</span>
+  <a href={EXTERNAL.stargazers} class="inline-flex items-center" aria-label="Star on GitHub">
+    <img class="stars-badge-dark" src={EXTERNAL.starsBadgeDark} alt="GitHub stars" height="32" loading="lazy" decoding="async" />
+    <img class="stars-badge-light" src={EXTERNAL.starsBadgeLight} alt="GitHub stars" height="32" loading="lazy" decoding="async" />
   </a>
   <ThemeToggle />
 </nav>

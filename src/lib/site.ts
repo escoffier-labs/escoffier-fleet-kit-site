@@ -22,6 +22,10 @@ export const NAV_LINKS = [
 
 export const EXTERNAL = {
   github: 'https://github.com/escoffier-labs/escoffier-fleet-kit',
+  stargazers: 'https://github.com/escoffier-labs/escoffier-fleet-kit/stargazers',
+  // Live shadcn-styled GitHub stars badge (shieldcn.dev). Two modes, swapped to match the theme toggle.
+  starsBadgeDark: 'https://shieldcn.dev/github/stars/escoffier-labs/escoffier-fleet-kit.svg?variant=secondary&mode=dark',
+  starsBadgeLight: 'https://shieldcn.dev/github/stars/escoffier-labs/escoffier-fleet-kit.svg?variant=secondary&mode=light',
   releases: 'https://github.com/escoffier-labs/escoffier-fleet-kit',
   changelog: 'https://github.com/escoffier-labs/escoffier-fleet-kit/blob/main/CHANGELOG.md',
   readme: 'https://github.com/escoffier-labs/escoffier-fleet-kit/blob/main/README.md',
